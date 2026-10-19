@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reporter Kilat: Game Teks Berita</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4efe6;--card:#fff;--ink:#1b1b2f;--mut:#5d5a6b;--red:#e63946;--acc:#1d4ed8;--hi:#ffc43d;--ok:#12805c;--bad:#c62f3f;--line:#d9d2c3;--okbg:#d9f3e8;--badbg:#fbdfe3;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14131f;--card:#1f1e30;--ink:#f3f0ff;--mut:#a9a5c2;--red:#ff5d6c;--acc:#8fb0ff;--ok:#4fd1a1;--bad:#ff7d8c;--line:#35334f;--okbg:#12362d;--badbg:#431d26}}
+:root[data-theme="dark"]{--bg:#14131f;--card:#1f1e30;--ink:#f3f0ff;--mut:#a9a5c2;--red:#ff5d6c;--acc:#8fb0ff;--ok:#4fd1a1;--bad:#ff7d8c;--line:#35334f;--okbg:#12362d;--badbg:#431d26}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Bricolage Grotesque",system-ui,sans-serif}
+.wrap{max-width:560px;margin:0 auto;padding:16px 16px 40px}
+.brk{display:inline-block;background:var(--red);color:#fff;font-weight:800;padding:2px 12px;border-radius:6px;animation:bl 1.2s steps(2) infinite}
+@keyframes bl{50%{opacity:.55}}
+h1{font-size:clamp(34px,10vw,52px);line-height:1;margin:10px 0 8px;font-weight:800;letter-spacing:-.03em}
+h2{margin:6px 0;font-size:24px}
+.sub{color:var(--mut);margin:0 0 14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:18px;margin-bottom:12px}
+button{font:inherit;font-weight:700;cursor:pointer;border:2px solid var(--line);background:var(--card);color:var(--ink);padding:12px 14px;border-radius:14px}
+button:hover:not(:disabled){border-color:var(--acc)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button.go{background:var(--red);border-color:var(--red);color:#fff;width:100%;font-size:19px;padding:14px}
+input,textarea{font:inherit;width:100%;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);margin:4px 0 10px}
+.hud{display:flex;justify-content:space-between;align-items:center;font-weight:700;margin-bottom:8px;gap:8px;flex-wrap:wrap}
+.pill{background:var(--card);border:2px solid var(--line);border-radius:99px;padding:2px 12px}
+.heart{color:var(--red);letter-spacing:2px}
+.bar{height:12px;background:var(--line);border-radius:99px;overflow:hidden;margin:6px 0 14px}
+.bar i{display:block;height:100%;width:100%;background:var(--ok);transition:width .1s linear}
+.bar i.low{background:var(--red)}
+.q{font:600 clamp(20px,5.5vw,26px)/1.35 "Source Serif 4",Georgia,serif;min-height:96px;display:flex;align-items:center}
+.opts{display:grid;gap:10px;margin-top:10px}
+.opts.g2{grid-template-columns:1fr 1fr}.opts.g3{grid-template-columns:1fr 1fr}
+.opts button{font-size:18px;padding:16px 10px}
+.opts button.ok{background:var(--okbg);border-color:var(--ok)}
+.opts button.bad{background:var(--badbg);border-color:var(--bad)}
+.fb{min-height:28px;font-weight:800;margin-top:10px}
+.big{font-size:56px;font-weight:800;line-height:1}
+.miss{border-left:5px solid var(--hi);padding-left:12px;margin:8px 0;font-family:"Source Serif 4",Georgia,serif}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px}
+.pop{animation:pp .35s ease}
+@keyframes pp{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app"></div></div>
+<script>
+var L=["Apa","Siapa","Kapan","Di mana","Mengapa","Bagaimana"];
+var R=[
+{n:"Fakta atau Opini?",i:"Fakta bisa dibuktikan. Opini berisi penilaian atau pendapat pribadi.",o:["Fakta","Opini"],d:[
+["Panitia mencatat 240 peserta hadir.",0],["Penampilan band sekolah itu sangat memukau.",1],["Banjir merendam jalan setinggi 30 cm.",0],["Sebaiknya pemerintah segera menutup jalan itu.",1],["Lomba dimulai pukul 08.00 WIB di aula.",0],["Menurut saya, harga menunya terlalu mahal.",1],["Polisi menangkap dua tersangka pada Rabu malam.",0],["Pelaku pasti orang yang tidak bertanggung jawab.",1],["Perpustakaan menerima 300 buku sumbangan.",0],["Acara itu paling meriah sepanjang masa.",1]]},
+{n:"Unsur 5W+1H",i:"Tentukan unsur berita yang dijawab oleh potongan kalimat ini.",o:L,d:[
+["Rina Kartika, siswi kelas XI",1],["pada Jumat pagi (16/10/2026)",2],["di Stadion Utama Gelora Bung Karno",3],["karena hujan deras mengguyur sejak subuh",4],["dengan cara memasang pompa air darurat",5],["menggelar pameran buku sekolah",0],["Kepala Dinas Pendidikan",1],["sekitar pukul 13.00 WIB",2],["di halaman belakang sekolah",3],["sebab dana perbaikan belum cair",4]]},
+{n:"Langsung atau Tidak?",i:"Kalimat langsung memakai tanda kutip. Kalimat tidak langsung memakai kata bahwa.",o:["Langsung","Tidak langsung"],d:[
+["“Kami akan menanam seribu pohon,” kata Rina.",0],["Kepala sekolah mengatakan bahwa ujian ditunda.",1],["Ketua panitia berujar, “Pendaftaran ditutup besok.”",0],["Pak Budi menjelaskan bahwa jalan itu akan diperbaiki.",1],["“Saya tidak melihat kejadiannya,” ujar saksi.",0],["Warga melaporkan bahwa listrik padam sejak pagi.",1],["Wali kota menyatakan, “Taman ini terbuka untuk umum.”",0],["Guru itu menyampaikan bahwa lomba diundur sepekan.",1]]}];
+var A=document.getElementById("app"),g,Q,tm,t0,NM="",KL="",T=10;
+function sh(a){return a.slice().sort(function(){return Math.random()-.5})}
+function home(){
+A.innerHTML='<span class="brk">BREAKING</span><h1>Reporter Kilat</h1><p class="sub">Tiga ronde, 15 berita, 10 detik per soal. Jawab cepat, jaga kombo, dan jangan kehilangan tiga nyawa.</p>'+
+'<div class="card"><label for="nm">Nama</label><input id="nm" type="text" autocomplete="name" value="'+NM+'"><label for="kl">Kelas (contoh: XI-3)</label><input id="kl" type="text" value="'+KL+'"><button class="go" id="st">Mulai tugas liputan</button></div>'+
+'<div class="card"><b>Cara mainnya</b><br>Skor tiap soal = 100 + bonus kecepatan + bonus kombo. Jawaban salah atau waktu habis mengurangi satu nyawa dan memutus kombo.</div>';
+document.getElementById("st").onclick=function(){NM=document.getElementById("nm").value.trim();KL=document.getElementById("kl").value.trim();begin()}}
+function begin(){Q=[];R.forEach(function(r,i){sh(r.d).slice(0,5).forEach(function(x){Q.push({r:i,t:x[0],a:x[1]})})});g={i:0,s:0,c:0,l:3,ok:0,miss:[]};next()}
+function next(){if(g.i>=Q.length||g.l<=0)return fin();if(g.i%5===0)return intro();ask()}
+function intro(){var r=R[Q[g.i].r];A.innerHTML='<div class="card pop"><span class="brk">RONDE '+(Q[g.i].r+1)+' DARI 3</span><h2>'+r.n+'</h2><p>'+r.i+'</p><button class="go" id="gg">Siap, mulai ronde</button></div>';document.getElementById("gg").onclick=ask}
+function hud(){return '<div class="hud"><span class="pill">Skor '+g.s+'</span><span class="pill">Kombo x'+g.c+'</span><span class="heart" aria-label="Nyawa '+g.l+'">'+"♥".repeat(g.l)+'</span><span class="pill">'+(g.i+1)+'/'+Q.length+'</span></div>'}
+function ask(){var q=Q[g.i],r=R[q.r];
+A.innerHTML=hud()+'<div class="bar"><i id="bar"></i></div><div class="card"><div class="q" id="qt"></div><div class="opts '+(r.o.length>2?"g3":"g2")+'" id="op"></div><div class="fb" id="fb" role="status"></div></div>';
+document.getElementById("qt").textContent=q.t;
+var op=document.getElementById("op");r.o.forEach(function(o,k){var b=document.createElement("button");b.textContent=o;b.onclick=function(){ans(k)};op.appendChild(b)});
+t0=Date.now();clearInterval(tm);tm=setInterval(function(){var l=T-(Date.now()-t0)/1000,b=document.getElementById("bar");if(!b)return;b.style.width=Math.max(l,0)/T*100+"%";if(l<3)b.className="low";if(l<=0)ans(-1)},100)}
+function ans(k){clearInterval(tm);var q=Q[g.i],l=Math.max(T-(Date.now()-t0)/1000,0),bs=document.querySelectorAll("#op button"),f=document.getElementById("fb"),ok=k===q.a;
+bs.forEach(function(b){b.disabled=true});bs[q.a].classList.add("ok");
+if(ok){var p=100+Math.round(l*5)+Math.min(g.c,5)*10;g.s+=p;g.c++;g.ok++;f.textContent="Benar! +"+p+" poin"}
+else{g.c=0;g.l--;g.miss.push(q);if(k>=0)bs[k].classList.add("bad");f.textContent=k<0?"Waktu habis! Jawabannya: "+R[q.r].o[q.a]:"Belum tepat. Jawabannya: "+R[q.r].o[q.a]}
+setTimeout(function(){g.i++;next()},1200)}
+function fin(){var s=g.s,rk=s<800?"Magang Redaksi":s<1500?"Reporter Lapangan":s<2200?"Redaktur Handal":"Pemimpin Redaksi",b=0;
+try{b=+localStorage.getItem("rrb")||0;if(s>b){localStorage.setItem("rrb",s);b=s}}catch(e){b=Math.max(b,s)}
+var tx="Nama: "+(NM||"-")+" | Kelas: "+(KL||"-")+" | Skor: "+s+" | Benar: "+g.ok+"/"+Q.length+" | Pangkat: "+rk;
+var m=g.miss.slice(0,5).map(function(q){return '<div class="miss">'+q.t.replace(/</g,"&lt;")+'<br><b>Jawaban: '+R[q.r].o[q.a]+'</b></div>'}).join("");
+A.innerHTML='<div class="card pop"><span class="brk">EDISI TERBIT</span><p class="sub">'+(g.l<=0?"Nyawa habis, tetapi liputanmu tetap terbit.":"Semua berita selesai diliput.")+'</p><div class="big">'+s+'</div><h2>'+rk+'</h2><p>Benar '+g.ok+' dari '+Q.length+' soal. Skor terbaik di perangkat ini: '+b+'.</p></div>'+
+(m?'<div class="card"><b>Pelajari lagi</b>'+m+'</div>':'')+
+'<div class="card"><label for="hs">Hasil untuk guru</label><textarea id="hs" rows="3" readonly>'+tx+'</textarea><div class="row"><button id="cp">Salin hasil</button><span id="cm"></span></div></div><button class="go" id="ag">Main lagi</button>';
+document.getElementById("ag").onclick=home;
+document.getElementById("cp").onclick=function(){var t=document.getElementById("hs"),c=document.getElementById("cm"),ok=false;t.select();try{ok=document.execCommand("copy")}catch(e){}c.textContent=ok?"Tersalin!":"Tekan lama teks lalu salin."}}
+home();
+</script>
+</body>
+</html>
